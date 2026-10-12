@@ -34,7 +34,7 @@ th { font-size:13px; color:var(--muted); font-weight:600; }
 .field-error { color:var(--err-ink); font-size:13px; }
 .muted { color:var(--muted); }
 .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; }
-.stat { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; }
+.stat { display:block; color:inherit; text-decoration:none; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; }
 .stat .num { font-size:28px; font-weight:700; }
 .filters { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px; }
 .filters > div { flex:1 1 160px; }

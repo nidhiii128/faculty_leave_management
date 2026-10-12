@@ -4,6 +4,7 @@ import com.flms.model.LeaveRequest;
 import com.flms.model.LeaveStatus;
 import com.flms.model.LeaveType;
 import com.flms.service.Actor;
+import com.flms.service.LeaveReportService;
 import com.flms.service.LeaveService;
 import com.flms.service.LeaveWorkflowService;
 import com.flms.service.WorkflowException;
@@ -26,10 +27,13 @@ public class LeaveController {
 
     private final LeaveService leaveService;
     private final LeaveWorkflowService workflowService;
+    private final LeaveReportService reportService;
 
-    public LeaveController(LeaveService leaveService, LeaveWorkflowService workflowService) {
+    public LeaveController(LeaveService leaveService, LeaveWorkflowService workflowService,
+                           LeaveReportService reportService) {
         this.leaveService = leaveService;
         this.workflowService = workflowService;
+        this.reportService = reportService;
     }
 
     @ModelAttribute("leaveTypes")
@@ -37,9 +41,20 @@ public class LeaveController {
         return LeaveType.values();
     }
 
+    @ModelAttribute("statuses")
+    public LeaveStatus[] statuses() {
+        return LeaveStatus.values();
+    }
+
     @GetMapping
-    public String list(Authentication auth, Model model) {
-        model.addAttribute("leaves", leaveService.listVisible(Actor.from(auth)));
+    public String list(Authentication auth, Model model,
+                       @RequestParam(required = false) String q,
+                       @RequestParam(required = false) LeaveStatus status,
+                       @RequestParam(required = false) LeaveType type) {
+        model.addAttribute("leaves", reportService.search(Actor.from(auth), q, status, type));
+        model.addAttribute("q", q);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedType", type);
         return "leaves/list";
     }
 
