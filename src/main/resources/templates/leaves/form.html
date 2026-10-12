@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${editing} ? 'Edit leave' : 'Apply for leave')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main class="narrow">
+    <h1 id="page-title" th:text="${editing} ? 'Edit leave request' : 'Apply for leave'">Apply for leave</h1>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <form id="leave-form" class="card" method="post" th:object="${leaveForm}"
+          th:action="${editing} ? @{/leaves/{id}(id=${leaveId})} : @{/leaves}">
+        <p class="field-error" id="form-errors" th:if="${#fields.hasGlobalErrors() or #fields.hasErrors('dateRangeValid')}">
+            <span th:each="e : ${#fields.errors('dateRangeValid')}" th:text="${e}"></span>
+            <span th:each="e : ${#fields.globalErrors()}" th:text="${e}"></span>
+        </p>
+
+        <label for="leaveType">Leave type</label>
+        <select id="leaveType" th:field="*{leaveType}">
+            <option value="">-- select --</option>
+            <option th:each="t : ${leaveTypes}" th:value="${t}" th:text="${t.label}">Casual</option>
+        </select>
+        <span class="field-error" th:errors="*{leaveType}"></span>
+
+        <label for="startDate">Start date</label>
+        <input id="startDate" type="date" th:field="*{startDate}">
+        <span class="field-error" th:errors="*{startDate}"></span>
+
+        <label for="endDate">End date</label>
+        <input id="endDate" type="date" th:field="*{endDate}">
+        <span class="field-error" th:errors="*{endDate}"></span>
+
+        <label for="reason">Reason</label>
+        <textarea id="reason" th:field="*{reason}"></textarea>
+        <span class="field-error" th:errors="*{reason}"></span>
+
+        <button id="submit-leave" type="submit" th:text="${editing} ? 'Save changes' : 'Submit request'">Submit</button>
+    </form>
+</main>
+</body>
+</html>

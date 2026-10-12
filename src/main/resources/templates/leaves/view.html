@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Leave details')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main>
+    <h1 id="page-title" th:text="'Leave request #' + ${leave.id}">Leave request</h1>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="card">
+        <dl>
+            <dt>Status</dt><dd><span id="leave-status" class="badge" th:classappend="${leave.status}" th:text="${leave.status}">PENDING</span></dd>
+            <dt>Faculty</dt><dd id="leave-faculty" th:text="${leave.facultyName}">Name</dd>
+            <dt>Department</dt><dd th:text="${leave.department}">Dept</dd>
+            <dt>Leave type</dt><dd id="leave-type" th:text="${leave.leaveType.label}">Casual</dd>
+            <dt>From</dt><dd id="leave-start" th:text="${#temporals.format(leave.startDate, 'dd MMM yyyy')}">start</dd>
+            <dt>To</dt><dd id="leave-end" th:text="${#temporals.format(leave.endDate, 'dd MMM yyyy')}">end</dd>
+            <dt>Days</dt><dd id="leave-days" th:text="${leave.days}">1</dd>
+            <dt>Reason</dt><dd id="leave-reason" th:text="${leave.reason}">reason</dd>
+        </dl>
+    </div>
+
+    <a class="btn secondary" id="back" th:href="@{/leaves}">Back to records</a>
+</main>
+</body>
+</html>
