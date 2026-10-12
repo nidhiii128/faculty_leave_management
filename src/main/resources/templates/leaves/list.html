@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Leave records')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main>
+    <h1 id="page-title" th:text="${isHod} ? 'All leave records' : 'My leave records'">Leave records</h1>
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <p id="no-results" class="muted" th:if="${#lists.isEmpty(leaves)}">No leave records found.</p>
+    <table id="leave-table" th:unless="${#lists.isEmpty(leaves)}">
+        <thead>
+        <tr><th>#</th><th th:if="${isHod}">Faculty</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="l : ${leaves}" th:id="'leave-row-' + ${l.id}">
+            <td><a th:href="@{/leaves/{id}(id=${l.id})}" th:text="${l.id}">1</a></td>
+            <td th:if="${isHod}" th:text="${l.facultyName}">Name</td>
+            <td th:text="${l.leaveType.label}">Casual</td>
+            <td th:text="${#temporals.format(l.startDate, 'dd MMM yyyy')}">start</td>
+            <td th:text="${#temporals.format(l.endDate, 'dd MMM yyyy')}">end</td>
+            <td th:text="${l.days}">1</td>
+            <td class="reason" th:text="${l.reason}">reason</td>
+            <td><span class="badge status" th:classappend="${l.status}" th:text="${l.status}">PENDING</span></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

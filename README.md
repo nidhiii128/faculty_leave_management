@@ -8,6 +8,7 @@ through a complete DevOps pipeline: Git → Jenkins → Maven → Selenium quali
 ## Features
 
 - Login with Faculty and HOD roles
+- Faculty can apply for leave and view their own records
 
 ## Quick start
 
