@@ -40,6 +40,19 @@ public class LeaveService {
         return repository.save(leave);
     }
 
+    /** Owner may change dates, type and reason while the request is still PENDING. */
+    public LeaveRequest update(Actor actor, Long id, LeaveType type, LocalDate start, LocalDate end, String reason) {
+        LeaveRequest leave = get(actor, id);
+        requireOwner(actor, leave, "edit");
+        requirePending(leave, "edited");
+        validateDates(start, end);
+        leave.setLeaveType(type);
+        leave.setStartDate(start);
+        leave.setEndDate(end);
+        leave.setReason(reason.trim());
+        return repository.save(leave);
+    }
+
     @Transactional(readOnly = true)
     public LeaveRequest get(Actor actor, Long id) {
         LeaveRequest leave = repository.findById(id).orElseThrow(() -> new LeaveNotFoundException(id));
@@ -55,6 +68,19 @@ public class LeaveService {
         return actor.hod()
             ? repository.findAllByOrderByStartDateDesc()
             : repository.findByFacultyUsernameOrderByStartDateDesc(actor.username());
+    }
+
+    static void requireOwner(Actor actor, LeaveRequest leave, String action) {
+        if (!leave.getFacultyUsername().equals(actor.username())) {
+            throw new WorkflowException("Only the faculty member who applied can " + action + " this request");
+        }
+    }
+
+    static void requirePending(LeaveRequest leave, String action) {
+        if (leave.getStatus() != LeaveStatus.PENDING) {
+            throw new WorkflowException("Only pending requests can be " + action
+                + " (this one is " + leave.getStatus() + ")");
+        }
     }
 
     static void validateDates(LocalDate start, LocalDate end) {
