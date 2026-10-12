@@ -1,0 +1,11 @@
+target/
+*.class
+*.log
+*.db
+data/
+.idea/
+*.iml
+.vscode/
+.DS_Store
+.env
+ansible/*.retry

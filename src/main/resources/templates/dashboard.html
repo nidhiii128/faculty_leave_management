@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main>
+    <h1 id="page-title">Dashboard</h1>
+    <p>Welcome, <span th:text="${currentUser}">user</span>. Leave features are coming in the next sprint.</p>
+</main>
+</body>
+</html>
