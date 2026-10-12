@@ -10,6 +10,7 @@ through a complete DevOps pipeline: Git → Jenkins → Maven → Selenium quali
 - Login with Faculty and HOD roles
 - Faculty can apply for leave and view their own records
 - Search by keyword, status and type; summary dashboard; JSON API
+- Faculty can edit or cancel pending requests; HOD approves or rejects with a comment
 
 ## Quick start
 
