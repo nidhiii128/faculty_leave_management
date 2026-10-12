@@ -1,0 +1,50 @@
+diff --cc README.md
+index 1895a8d,4499e58..0000000
+--- a/README.md
++++ b/README.md
+@@@ -9,7 -9,7 +9,11 @@@ through a complete DevOps pipeline: Gi
+  
+  - Login with Faculty and HOD roles
+  - Faculty can apply for leave and view their own records
+++<<<<<<< HEAD
+ +- Search by keyword, status and type; summary dashboard; JSON API
+++=======
++ - Faculty can edit or cancel pending requests; HOD approves or rejects with a comment
+++>>>>>>> origin/develop
+  
+  ## Quick start
+  
+diff --cc src/main/java/com/flms/web/LeaveController.java
+index ba64e64,e55445f..0000000
+--- a/src/main/java/com/flms/web/LeaveController.java
++++ b/src/main/java/com/flms/web/LeaveController.java
+@@@ -4,8 -4,8 +4,9 @@@ import com.flms.model.LeaveRequest
+  import com.flms.model.LeaveStatus;
+  import com.flms.model.LeaveType;
+  import com.flms.service.Actor;
+ +import com.flms.service.LeaveReportService;
+  import com.flms.service.LeaveService;
++ import com.flms.service.LeaveWorkflowService;
+  import com.flms.service.WorkflowException;
+  import jakarta.validation.Valid;
+  import org.springframework.security.core.Authentication;
+@@@ -25,11 -25,11 +26,19 @@@ import org.springframework.web.servlet.
+  public class LeaveController {
+  
+      private final LeaveService leaveService;
+++<<<<<<< HEAD
+ +    private final LeaveReportService reportService;
+ +
+ +    public LeaveController(LeaveService leaveService, LeaveReportService reportService) {
+ +        this.leaveService = leaveService;
+ +        this.reportService = reportService;
+++=======
++     private final LeaveWorkflowService workflowService;
++ 
++     public LeaveController(LeaveService leaveService, LeaveWorkflowService workflowService) {
++         this.leaveService = leaveService;
++         this.workflowService = workflowService;
+++>>>>>>> origin/develop
+      }
+  
+      @ModelAttribute("leaveTypes")
