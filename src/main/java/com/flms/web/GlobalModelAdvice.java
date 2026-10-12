@@ -29,6 +29,12 @@ public class GlobalModelAdvice {
         return version;
     }
 
+    @ModelAttribute("currentUsername")
+    public String currentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth == null ? null : auth.getName();
+    }
+
     @ModelAttribute("currentUser")
     public String currentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
