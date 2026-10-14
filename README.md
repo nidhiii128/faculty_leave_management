@@ -37,3 +37,5 @@ Open http://localhost:8080 and sign in as `faculty1` / `password` (Faculty) or `
 | 10 | [Continuous testing — quality gate and defect correction](docs/10-continuous-testing.md) |
 | 11 | [Docker image and container lifecycle](docs/11-docker.md) |
 | 12 | [Jenkins → Docker continuous deployment](docs/12-jenkins-docker-cd.md) |
+| 13 | [Configuration management (Ansible)](docs/13-configuration-management.md) |
+| 14 | [Provisioning, idempotency, health check, rollback](docs/14-provisioning-reliability.md) |
