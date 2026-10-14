@@ -9,6 +9,8 @@ through a complete DevOps pipeline: Git → Jenkins → Maven → Selenium quali
 
 - Login with Faculty and HOD roles
 - Faculty can apply for leave and view their own records
+- Faculty can edit or cancel pending requests; HOD approves or rejects with a comment
+- Search by keyword, status and type; summary dashboard; JSON API
 
 ## Quick start
 
@@ -28,3 +30,4 @@ Open http://localhost:8080 and sign in as `faculty1` / `password` (Faculty) or `
 | 2 | [Agile plan and DevOps workflow](docs/02-agile-plan.md) |
 | 3 | [SRS, architecture and setup](docs/03-srs-architecture.md) |
 | 4 | [Git and GitHub workflow](docs/04-git-workflow.md) |
+| 5–6 | [Feature branches, conflict resolution, release tag](docs/05-06-feature-development.md) |

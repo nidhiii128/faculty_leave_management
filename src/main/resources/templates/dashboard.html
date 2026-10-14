@@ -5,7 +5,30 @@
 <header th:replace="~{fragments/layout :: nav}"></header>
 <main>
     <h1 id="page-title">Dashboard</h1>
-    <p>Welcome, <span th:text="${currentUser}">user</span>. Leave features are coming in the next sprint.</p>
+    <p class="muted" th:text="${isHod} ? 'Department summary of all leave requests.' : 'Summary of your leave requests.'">Summary</p>
+
+    <div class="grid">
+        <a class="stat" th:href="@{/leaves(status='PENDING')}"><div class="muted">Pending</div><div class="num" id="count-pending" th:text="${summary.pending}">0</div></a>
+        <a class="stat" th:href="@{/leaves(status='APPROVED')}"><div class="muted">Approved</div><div class="num" id="count-approved" th:text="${summary.approved}">0</div></a>
+        <a class="stat" th:href="@{/leaves(status='REJECTED')}"><div class="muted">Rejected</div><div class="num" id="count-rejected" th:text="${summary.rejected}">0</div></a>
+        <a class="stat" th:href="@{/leaves(status='CANCELLED')}"><div class="muted">Cancelled</div><div class="num" id="count-cancelled" th:text="${summary.cancelled}">0</div></a>
+        <div class="stat"><div class="muted">Approved days</div><div class="num" id="approved-days" th:text="${summary.approvedDays}">0</div></div>
+    </div>
+
+    <h2>Upcoming approved leave</h2>
+    <p class="muted" id="no-upcoming" th:if="${#lists.isEmpty(summary.upcomingApproved)}">No upcoming approved leave.</p>
+    <table id="upcoming-table" th:unless="${#lists.isEmpty(summary.upcomingApproved)}">
+        <thead><tr><th>Faculty</th><th>Type</th><th>From</th><th>To</th><th>Days</th></tr></thead>
+        <tbody>
+        <tr th:each="l : ${summary.upcomingApproved}">
+            <td><a th:href="@{/leaves/{id}(id=${l.id})}" th:text="${l.facultyName}">Name</a></td>
+            <td th:text="${l.leaveType.label}">Casual</td>
+            <td th:text="${#temporals.format(l.startDate, 'dd MMM yyyy')}">start</td>
+            <td th:text="${#temporals.format(l.endDate, 'dd MMM yyyy')}">end</td>
+            <td th:text="${l.days}">1</td>
+        </tr>
+        </tbody>
+    </table>
 </main>
 </body>
 </html>

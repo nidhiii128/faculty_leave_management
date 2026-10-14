@@ -7,6 +7,31 @@
     <h1 id="page-title" th:text="${isHod} ? 'All leave records' : 'My leave records'">Leave records</h1>
     <div th:replace="~{fragments/layout :: flash}"></div>
 
+    <form id="search-form" class="filters card" method="get" th:action="@{/leaves}">
+        <div>
+            <label for="q">Keyword</label>
+            <input id="q" name="q" th:value="${q}" placeholder="Name, reason or department">
+        </div>
+        <div>
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="">All</option>
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == selectedStatus}">PENDING</option>
+            </select>
+        </div>
+        <div>
+            <label for="type">Type</label>
+            <select id="type" name="type">
+                <option value="">All</option>
+                <option th:each="t : ${leaveTypes}" th:value="${t}" th:text="${t.label}" th:selected="${t == selectedType}">Casual</option>
+            </select>
+        </div>
+        <div>
+            <button id="search-btn" type="submit">Search</button>
+            <a class="btn secondary" id="clear-search" th:href="@{/leaves}">Clear</a>
+        </div>
+    </form>
+
     <p id="no-results" class="muted" th:if="${#lists.isEmpty(leaves)}">No leave records found.</p>
     <table id="leave-table" th:unless="${#lists.isEmpty(leaves)}">
         <thead>

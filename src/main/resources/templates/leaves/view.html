@@ -17,8 +17,33 @@
             <dt>To</dt><dd id="leave-end" th:text="${#temporals.format(leave.endDate, 'dd MMM yyyy')}">end</dd>
             <dt>Days</dt><dd id="leave-days" th:text="${leave.days}">1</dd>
             <dt>Reason</dt><dd id="leave-reason" th:text="${leave.reason}">reason</dd>
+            <th:block th:if="${leave.reviewedBy}">
+                <dt>Reviewed by</dt><dd id="leave-reviewer" th:text="${leave.reviewedBy}">hod</dd>
+            </th:block>
+            <th:block th:if="${leave.reviewerComment}">
+                <dt>HOD comment</dt><dd id="leave-comment" th:text="${leave.reviewerComment}">comment</dd>
+            </th:block>
         </dl>
     </div>
+
+    <!-- Faculty actions: only the owner, only while pending -->
+    <div class="card" id="owner-actions"
+         th:if="${!isHod and leave.status.name() == 'PENDING' and leave.facultyUsername == currentUsername}">
+        <a class="btn" id="edit-leave" th:href="@{/leaves/{id}/edit(id=${leave.id})}">Edit</a>
+        <form class="inline" method="post" th:action="@{/leaves/{id}/cancel(id=${leave.id})}">
+            <button id="cancel-leave" class="danger" type="submit">Cancel request</button>
+        </form>
+    </div>
+
+    <!-- HOD review: only while pending -->
+    <form class="card" id="review-form" method="post" th:if="${isHod and leave.status.name() == 'PENDING'}"
+          th:action="@{/leaves/{id}/approve(id=${leave.id})}">
+        <label for="comment">Comment (required to reject)</label>
+        <textarea id="comment" name="comment"></textarea>
+        <button id="approve-leave" type="submit">Approve</button>
+        <button id="reject-leave" class="danger" type="submit"
+                th:formaction="@{/leaves/{id}/reject(id=${leave.id})}">Reject</button>
+    </form>
 
     <a class="btn secondary" id="back" th:href="@{/leaves}">Back to records</a>
 </main>
