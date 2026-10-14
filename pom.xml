@@ -13,7 +13,7 @@
 
     <groupId>com.flms</groupId>
     <artifactId>faculty-leave-management</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>war</packaging>
     <name>Faculty Leave Management System</name>
     <description>Faculty Leave Management System with an automated DevOps testing pipeline</description>
