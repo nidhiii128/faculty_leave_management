@@ -1,0 +1,19 @@
+# Run the app locally in a container:  mvn -B package -DskipTests && docker compose up -d --build
+services:
+  flms:
+    build:
+      context: .
+      args:
+        VERSION: local
+    image: flms:local
+    container_name: flms
+    ports:
+      - "8090:8080"
+    environment:
+      APP_ENV: docker
+    volumes:
+      - flms-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  flms-data:

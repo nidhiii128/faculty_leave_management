@@ -35,3 +35,5 @@ Open http://localhost:8080 and sign in as `faculty1` / `password` (Faculty) or `
 | 8 | [Jenkinsfile and Tomcat deployment](docs/08-pipeline-deployment.md) |
 | 9 | [Selenium test plan and local execution](docs/09-selenium-tests.md) |
 | 10 | [Continuous testing — quality gate and defect correction](docs/10-continuous-testing.md) |
+| 11 | [Docker image and container lifecycle](docs/11-docker.md) |
+| 12 | [Jenkins → Docker continuous deployment](docs/12-jenkins-docker-cd.md) |
