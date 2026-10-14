@@ -1,5 +1,6 @@
 // Faculty Leave Management System — CI/CD pipeline (pipeline as code).
-// Requires on the agent: JDK 17+, Maven, curl.  Credentials: "tomcat-manager" (username/password).
+// Requires on the agent: JDK 17+, Maven, curl.
+// Quality gate: any failing unit or Selenium test fails the build, so the deploy stages never run.  Credentials: "tomcat-manager" (username/password).
 
 pipeline {
     agent any
@@ -9,6 +10,8 @@ pipeline {
                description: 'Environment name baked into the build and shown in the app header')
         choice(name: 'DEPLOY_TARGET', choices: ['tomcat', 'none'],
                description: 'Where to deploy after a successful build')
+        choice(name: 'BROWSER', choices: ['htmlunit', 'chrome', 'firefox'],
+               description: 'Browser for the Selenium suite (chrome/firefox must be installed on the agent)')
         string(name: 'TOMCAT_URL', defaultValue: 'http://tomcat:8080',
                description: 'Base URL of the Tomcat server (manager app enabled)')
     }
@@ -51,6 +54,19 @@ pipeline {
             post {
                 always {
                     junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: false
+                }
+            }
+        }
+
+        stage('Selenium quality gate') {
+            steps {
+                // Starts the app on a random port and runs the WebDriver journeys (headless HtmlUnit by default)
+                sh "${MVN} verify -DskipUnitTests -Dbrowser=${params.BROWSER} -Dapp.env=${params.APP_ENV}"
+            }
+            post {
+                always {
+                    junit testResults: 'target/failsafe-reports/*.xml', allowEmptyResults: false
+                    archiveArtifacts artifacts: 'target/selenium-screenshots/**', allowEmptyArchive: true
                 }
             }
         }

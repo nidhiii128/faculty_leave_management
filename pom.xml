@@ -25,6 +25,8 @@
         <app.env>local</app.env>
         <!-- htmlunit = headless pure-Java browser (no install needed); chrome = headless Google Chrome -->
         <browser>htmlunit</browser>
+        <!-- Jenkins runs unit tests in their own stage, then "mvn verify -DskipUnitTests" for Selenium only -->
+        <skipUnitTests>false</skipUnitTests>
     </properties>
 
     <dependencies>
@@ -98,6 +100,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <skipTests>${skipUnitTests}</skipTests>
                     <excludes>
                         <exclude>**/*UiIT.java</exclude>
                     </excludes>

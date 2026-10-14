@@ -34,3 +34,4 @@ Open http://localhost:8080 and sign in as `faculty1` / `password` (Faculty) or `
 | 7 | [Jenkins installation and CI job](docs/07-jenkins-ci.md) |
 | 8 | [Jenkinsfile and Tomcat deployment](docs/08-pipeline-deployment.md) |
 | 9 | [Selenium test plan and local execution](docs/09-selenium-tests.md) |
+| 10 | [Continuous testing — quality gate and defect correction](docs/10-continuous-testing.md) |
