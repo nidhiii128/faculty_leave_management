@@ -1,0 +1,12 @@
+$ mvn -B test
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+$ mvn -B verify -DskipUnitTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.195 s -- in com.flms.ui.ApplyLeaveUiIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.740 s -- in com.flms.ui.EditAndSearchUiIT
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.888 s -- in com.flms.ui.ApprovalWorkflowUiIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.271 s -- in com.flms.ui.LoginUiIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.788 s -- in com.flms.ui.AccessControlUiIT
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
