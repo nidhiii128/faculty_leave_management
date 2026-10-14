@@ -1,0 +1,12 @@
+---
+# Provision a clean Ubuntu host and deploy the Faculty Leave Management System.
+#   ansible-galaxy collection install -r requirements.yml
+#   ansible-playbook site.yml -K                                  # latest image
+#   ansible-playbook site.yml -K -e app_version=1.1.0-17          # specific release
+- name: Provision and deploy FLMS
+  hosts: app
+  become: true
+  roles:
+    - common
+    - docker
+    - flms

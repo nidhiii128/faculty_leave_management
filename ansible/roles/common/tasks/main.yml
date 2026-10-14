@@ -1,0 +1,42 @@
+---
+- name: Install base packages
+  ansible.builtin.apt:
+    name: "{{ base_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create application group
+  ansible.builtin.group:
+    name: "{{ app_group }}"
+    system: true
+
+- name: Create application user (no login shell)
+  ansible.builtin.user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    home: "{{ app_home }}"
+    create_home: false
+
+- name: Create application directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: "{{ app_home }}", mode: "0755" }
+    - { path: "{{ app_data_dir }}", mode: "0750" }
+    - { path: "{{ app_log_dir }}", mode: "0750" }
+
+- name: Write environment file for the container
+  ansible.builtin.template:
+    src: flms.env.j2
+    dest: "{{ app_home }}/flms.env"
+    owner: root
+    group: "{{ app_group }}"
+    mode: "0640"
+  register: common_env_file

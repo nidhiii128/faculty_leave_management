@@ -1,0 +1,28 @@
+# ---- Configuration specification (see docs/13-configuration-management.md) ----
+app_name: flms
+app_user: flms
+app_group: flms
+app_home: /opt/flms                 # config + version records
+app_data_dir: /var/lib/flms         # H2 database (mounted into the container)
+app_log_dir: /var/log/flms
+
+app_env: staging                    # shown in the app header and /actuator/info
+app_port: 8090                      # host port -> container 8080
+
+# Image to deploy. Override per run: -e app_version=1.1.0-17
+app_image: localhost:5000/flms
+app_version: latest
+app_image_pull: true                # false = image was built/loaded locally on the target
+
+# Docker Engine install. Set false when Docker Desktop already provides docker (WSL).
+install_docker: true
+
+base_packages:
+  - ca-certificates
+  - curl
+  - python3-docker                  # needed by the community.docker modules
+  - tzdata
+
+health_url: "http://localhost:{{ app_port }}/actuator/health"
+health_retries: 30
+health_delay: 4
