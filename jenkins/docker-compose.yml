@@ -1,0 +1,34 @@
+# Lab CI/CD environment: Jenkins + Tomcat 10 (deployment target for Task 8).
+#   cd jenkins && docker compose up -d --build
+#   Jenkins: http://localhost:8081   Tomcat: http://localhost:8888
+services:
+  jenkins:
+    build: .
+    container_name: jenkins
+    # root lets the pipeline use the host Docker socket (Tasks 11-12). Lab use only.
+    user: root
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  tomcat:
+    image: tomcat:10.1-jdk17
+    container_name: tomcat
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./tomcat/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml:ro
+      - ./tomcat/manager-context.xml:/tmp/manager-context.xml:ro
+    # The official image ships the manager app in webapps.dist; enable it and allow remote deploys.
+    command: >
+      sh -c "cp -r webapps.dist/manager webapps/ &&
+             cp /tmp/manager-context.xml webapps/manager/META-INF/context.xml &&
+             catalina.sh run"
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
