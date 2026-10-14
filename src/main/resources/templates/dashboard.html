@@ -8,7 +8,7 @@
     <p class="muted" th:text="${isHod} ? 'Department summary of all leave requests.' : 'Summary of your leave requests.'">Summary</p>
 
     <div class="grid">
-        <a class="stat" th:href="@{/leaves(status='PENDING')}"><div class="muted">Pending</div><div class="num" id="count-pending" th:text="${summary.approved}">0</div></a>
+        <a class="stat" th:href="@{/leaves(status='PENDING')}"><div class="muted">Pending</div><div class="num" id="count-pending" th:text="${summary.pending}">0</div></a>
         <a class="stat" th:href="@{/leaves(status='APPROVED')}"><div class="muted">Approved</div><div class="num" id="count-approved" th:text="${summary.approved}">0</div></a>
         <a class="stat" th:href="@{/leaves(status='REJECTED')}"><div class="muted">Rejected</div><div class="num" id="count-rejected" th:text="${summary.rejected}">0</div></a>
         <a class="stat" th:href="@{/leaves(status='CANCELLED')}"><div class="muted">Cancelled</div><div class="num" id="count-cancelled" th:text="${summary.cancelled}">0</div></a>
