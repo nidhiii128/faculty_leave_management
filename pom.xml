@@ -13,15 +13,20 @@
 
     <groupId>com.flms</groupId>
     <artifactId>faculty-leave-management</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>war</packaging>
     <name>Faculty Leave Management System</name>
     <description>Faculty Leave Management System with an automated DevOps testing pipeline</description>
 
     <properties>
         <java.version>17</java.version>
+        <!-- Default environment baked into the WAR; Jenkins passes -Dapp.env=dev|staging|prod.
+             The APP_ENV environment variable still overrides it at runtime. -->
+        <app.env>local</app.env>
         <!-- htmlunit = headless pure-Java browser (no install needed); chrome = headless Google Chrome -->
         <browser>htmlunit</browser>
+        <!-- Jenkins runs unit tests in their own stage, then "mvn verify -DskipUnitTests" for Selenium only -->
+        <skipUnitTests>false</skipUnitTests>
     </properties>
 
     <dependencies>
@@ -95,6 +100,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <skipTests>${skipUnitTests}</skipTests>
                     <excludes>
                         <exclude>**/*UiIT.java</exclude>
                     </excludes>

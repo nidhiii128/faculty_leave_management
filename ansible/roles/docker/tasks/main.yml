@@ -1,0 +1,22 @@
+---
+- name: Install Docker Engine
+  ansible.builtin.apt:
+    name: docker.io
+    state: present
+  when: install_docker | bool
+
+- name: Ensure Docker service is running and enabled at boot
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  when: install_docker | bool
+
+- name: Check Docker is reachable
+  ansible.builtin.command: docker info --format '{{ "{{" }}.ServerVersion{{ "}}" }}'
+  register: docker_info
+  changed_when: false
+
+- name: Show Docker version
+  ansible.builtin.debug:
+    msg: "Docker server {{ docker_info.stdout }}"

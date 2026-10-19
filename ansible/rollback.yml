@@ -1,0 +1,22 @@
+---
+# Roll back to the version that was running before the last deployment.
+#   ansible-playbook rollback.yml -K
+- name: Roll back FLMS to the previous release
+  hosts: app
+  become: true
+  pre_tasks:
+    - name: Read previous version
+      ansible.builtin.slurp:
+        src: "{{ app_home }}/previous_version"
+      register: previous_file
+
+    - name: Select rollback target
+      ansible.builtin.set_fact:
+        app_version: "{{ previous_file.content | b64decode | trim }}"
+
+    - name: Announce rollback
+      ansible.builtin.debug:
+        msg: "Rolling back to {{ app_image }}:{{ app_version }}"
+  roles:
+    - common
+    - flms

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Not found')}"></head>
+<body>
+<main class="narrow" id="not-found">
+    <h1>Not found</h1>
+    <p>The page or leave record you asked for does not exist, or you are not allowed to see it.</p>
+    <a class="btn secondary" th:href="@{/dashboard}">Go to dashboard</a>
+</main>
+</body>
+</html>

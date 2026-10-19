@@ -1,0 +1,19 @@
+$ mvn -B test   # Jenkins stage "Unit tests"
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+$ mvn -B verify -DskipUnitTests   # Jenkins stage "Selenium quality gate"
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.130 s -- in com.flms.ui.ApplyLeaveUiIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.759 s -- in com.flms.ui.EditAndSearchUiIT
+[selenium] failure evidence saved: /home/nidhi_bhawari/faculty-leave-devops/target/selenium-screenshots/ApprovalWorkflowUiIT_hodApprovesLeave.*
+[ERROR] Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.745 s <<< FAILURE! -- in com.flms.ui.ApprovalWorkflowUiIT
+[ERROR] com.flms.ui.ApprovalWorkflowUiIT.hodApprovesLeave -- Time elapsed: 0.379 s <<< FAILURE!
+expected: -1
+ but was: 1
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.305 s -- in com.flms.ui.LoginUiIT
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.751 s -- in com.flms.ui.AccessControlUiIT
+[ERROR]   ApprovalWorkflowUiIT.hodApprovesLeave:34 
+expected: -1
+ but was: 1
+[ERROR] Tests run: 14, Failures: 1, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE

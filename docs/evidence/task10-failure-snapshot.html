@@ -1,0 +1,134 @@
+<!-- URL: http://localhost:40417/dashboard -->
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>
+      Dashboard | Faculty Leave
+    </title>
+    <link rel="stylesheet" href="/css/style.css"/>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/dashboard">
+        Faculty Leave
+      </a>
+      <span class="env" id="env-badge">
+        local · v1.0.0
+      </span>
+      <nav>
+        <a id="nav-dashboard" href="/dashboard">
+          Dashboard
+        </a>
+        <a id="nav-leaves" href="/leaves">
+          Leave records
+        </a>
+        <span class="user" id="current-user">
+          Dr. S. Kulkarni (HOD)
+        </span>
+        <form action="/logout" method="post" class="inline">
+          <input type="hidden" name="_csrf" value="FDGgyiAwm_q613qHfZsavbL2AE5XSXeQIQR5xOjFT0cJYnP2I1WYrxgJ_cmX5xu_SLYu3obHLS9kKBO9F2FL_Y3wd39vUkfG"/>
+          <button id="logout" type="submit" class="link">
+            Log out
+          </button>
+        </form>
+      </nav>
+    </header>
+    <main>
+      <h1 id="page-title">
+        Dashboard
+      </h1>
+      <p class="muted">
+        Department summary of all leave requests.
+      </p>
+      <div class="grid">
+        <a class="stat" href="/leaves?status=PENDING">
+          <div class="muted">
+            Pending
+          </div>
+          <div class="num" id="count-pending">
+            1
+          </div>
+        </a>
+        <a class="stat" href="/leaves?status=APPROVED">
+          <div class="muted">
+            Approved
+          </div>
+          <div class="num" id="count-approved">
+            1
+          </div>
+        </a>
+        <a class="stat" href="/leaves?status=REJECTED">
+          <div class="muted">
+            Rejected
+          </div>
+          <div class="num" id="count-rejected">
+            0
+          </div>
+        </a>
+        <a class="stat" href="/leaves?status=CANCELLED">
+          <div class="muted">
+            Cancelled
+          </div>
+          <div class="num" id="count-cancelled">
+            1
+          </div>
+        </a>
+        <div class="stat">
+          <div class="muted">
+            Approved days
+          </div>
+          <div class="num" id="approved-days">
+            2
+          </div>
+        </div>
+      </div>
+      <h2>
+        Upcoming approved leave
+      </h2>
+      <table id="upcoming-table">
+        <thead>
+          <tr>
+            <th>
+              Faculty
+            </th>
+            <th>
+              Type
+            </th>
+            <th>
+              From
+            </th>
+            <th>
+              To
+            </th>
+            <th>
+              Days
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="/leaves/5">
+                Dr. Asha Patil
+              </a>
+            </td>
+            <td>
+              Sick leave
+            </td>
+            <td>
+              13 Oct 2026
+            </td>
+            <td>
+              14 Oct 2026
+            </td>
+            <td>
+              2
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+---
+# Deploys {{ app_image }}:{{ app_version }} and records the previously running version for rollback.
+
+- name: Read the currently deployed version
+  ansible.builtin.slurp:
+    src: "{{ app_home }}/current_version"
+  register: flms_current_version_file
+  failed_when: false
+
+- name: Remember current version
+  ansible.builtin.set_fact:
+    flms_deployed_version: "{{ (flms_current_version_file.content | default('') | b64decode | trim) or 'none' }}"
+
+- name: Look up the application user's uid/gid
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ app_user }}"
+
+- name: Pull application image
+  community.docker.docker_image:
+    name: "{{ app_image }}"
+    tag: "{{ app_version }}"
+    source: pull
+  when: app_image_pull | bool
+
+- name: Run the application container
+  community.docker.docker_container:
+    name: "{{ app_name }}"
+    image: "{{ app_image }}:{{ app_version }}"
+    state: started
+    restart_policy: unless-stopped
+    published_ports:
+      - "{{ app_port }}:8080"
+    env_file: "{{ app_home }}/flms.env"
+    volumes:
+      - "{{ app_data_dir }}:/app/data"
+    # Run as the host's flms user so the container can write to the mounted data directory
+    user: "{{ ansible_facts.getent_passwd[app_user][1] }}:{{ ansible_facts.getent_passwd[app_user][2] }}"
+    # Configuration changes need a new container; an unchanged run leaves it alone (idempotent)
+    recreate: "{{ common_env_file.changed | default(false) }}"
+
+- name: Health check — wait until the application reports UP
+  ansible.builtin.uri:
+    url: "{{ health_url }}"
+    return_content: true
+  register: flms_health
+  until: flms_health.status == 200 and '"UP"' in flms_health.content
+  retries: "{{ health_retries }}"
+  delay: "{{ health_delay }}"
+  changed_when: false
+
+- name: Record the version we replaced (used by rollback.yml)
+  ansible.builtin.copy:
+    content: "{{ flms_deployed_version }}\n"
+    dest: "{{ app_home }}/previous_version"
+    mode: "0644"
+  when: flms_deployed_version not in ['none', app_version]
+
+- name: Record the deployed version
+  ansible.builtin.copy:
+    content: "{{ app_version }}\n"
+    dest: "{{ app_home }}/current_version"
+    mode: "0644"
+
+- name: Deployment summary
+  ansible.builtin.debug:
+    msg: >-
+      {{ app_name }} {{ app_version }} ({{ app_env }}) is UP on port {{ app_port }};
+      previously deployed: {{ flms_deployed_version }}
