@@ -1,0 +1,71 @@
+
+PLAY [Provision and deploy FLMS] ***********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [local]
+
+TASK [common : Install base packages] ******************************************
+ok: [local]
+
+TASK [common : Create application group] ***************************************
+ok: [local]
+
+TASK [common : Create application user (no login shell)] ***********************
+ok: [local]
+
+TASK [common : Create application directories] *********************************
+ok: [local] => (item={'path': '/opt/flms', 'mode': '0755'})
+ok: [local] => (item={'path': '/var/lib/flms', 'mode': '0750'})
+ok: [local] => (item={'path': '/var/log/flms', 'mode': '0750'})
+
+TASK [common : Write environment file for the container] ***********************
+ok: [local]
+
+TASK [docker : Install Docker Engine] ******************************************
+skipping: [local]
+
+TASK [docker : Ensure Docker service is running and enabled at boot] ***********
+skipping: [local]
+
+TASK [docker : Check Docker is reachable] **************************************
+ok: [local]
+
+TASK [docker : Show Docker version] ********************************************
+ok: [local] => {
+    "msg": "Docker server 28.5.1"
+}
+
+TASK [flms : Read the currently deployed version] ******************************
+ok: [local]
+
+TASK [flms : Remember current version] *****************************************
+ok: [local]
+
+TASK [flms : Look up the application user's uid/gid] ***************************
+ok: [local]
+
+TASK [flms : Pull application image] *******************************************
+ok: [local]
+
+TASK [flms : Run the application container] ************************************
+changed: [local]
+
+TASK [flms : Health check — wait until the application reports UP] *************
+FAILED - RETRYING: [local]: Health check — wait until the application reports UP (30 retries left).
+FAILED - RETRYING: [local]: Health check — wait until the application reports UP (29 retries left).
+ok: [local]
+
+TASK [flms : Record the version we replaced (used by rollback.yml)] ************
+changed: [local]
+
+TASK [flms : Record the deployed version] **************************************
+changed: [local]
+
+TASK [flms : Deployment summary] ***********************************************
+ok: [local] => {
+    "msg": "flms 1.1.0-8 (staging) is UP on port 8095; previously deployed: 1.1.0-5"
+}
+
+PLAY RECAP *********************************************************************
+local                      : ok=17   changed=3    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+
