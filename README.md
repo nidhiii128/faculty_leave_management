@@ -72,3 +72,4 @@ Open http://localhost:8080 and sign in as `faculty1` / `password` (Faculty) or `
 | — | [Evidence checklist](docs/EVIDENCE-CHECKLIST.md) |
 
 Built and tested automatically by Jenkins on every push to `develop`.
+Polling schedule: every 5 minutes (H/5 * * * *).
