@@ -32,15 +32,25 @@ public class DataSeeder implements ApplicationRunner {
             return;
         }
         LocalDate today = LocalDate.now();
-        repository.save(leave("faculty1", LeaveType.CASUAL, today.plusDays(7), today.plusDays(8),
-            "Family function in Nashik", LeaveStatus.PENDING, null));
+        repository.save(withSubstitute(leave("faculty1", LeaveType.CASUAL, today.plusDays(7), today.plusDays(8),
+            "Family function in Nashik", LeaveStatus.PENDING, null), "faculty3"));
         repository.save(leave("faculty1", LeaveType.DUTY, today.plusDays(14), today.plusDays(14),
             "External examiner duty at University of Mumbai", LeaveStatus.APPROVED, "Approved"));
         repository.save(leave("faculty2", LeaveType.SICK, today.minusDays(10), today.minusDays(9),
             "Viral fever, medical certificate attached", LeaveStatus.APPROVED, "Get well soon"));
         repository.save(leave("faculty2", LeaveType.EARNED, today.plusDays(20), today.plusDays(24),
             "Hometown visit", LeaveStatus.REJECTED, "Unit test week, please reschedule"));
+        repository.save(withSubstitute(leave("faculty3", LeaveType.DUTY, today.plusDays(3), today.plusDays(4),
+            "Paper presentation at IEEE conference, Pune", LeaveStatus.APPROVED, "All the best"), "faculty1"));
+        repository.save(withSubstitute(leave("faculty2", LeaveType.CASUAL, today.plusDays(10), today.plusDays(10),
+            "Bank and passport office work", LeaveStatus.APPROVED, "Approved"), "faculty3"));
         log.info("Seeded {} sample leave records", repository.count());
+    }
+
+    private static LeaveRequest withSubstitute(LeaveRequest l, String substitute) {
+        l.setSubstituteUsername(substitute);
+        l.setSubstituteName(FacultyDirectory.profile(substitute).fullName());
+        return l;
     }
 
     private static LeaveRequest leave(String user, LeaveType type, LocalDate start, LocalDate end,

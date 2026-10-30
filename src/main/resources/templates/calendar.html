@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Leave calendar')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<section class="page-hero">
+    <div class="container">
+        <div>
+            <div class="crumbs"><a th:href="@{/dashboard}">Dashboard</a> / Calendar</div>
+            <h1 id="page-title">Leave calendar</h1>
+            <p id="cal-month" th:text="${#temporals.format(cal.month.atDay(1), 'MMMM yyyy')}">November 2026</p>
+        </div>
+        <div class="cal-nav">
+            <a class="btn btn-outline btn-sm" id="cal-prev" th:href="@{/calendar(month=${cal.previous})}">
+                <svg th:replace="~{fragments/icons :: icon('arrow-left')}"></svg>Previous</a>
+            <a class="btn btn-outline btn-sm" id="cal-today" th:href="@{/calendar}">Today</a>
+            <a class="btn btn-outline btn-sm" id="cal-next" th:href="@{/calendar(month=${cal.next})}">
+                Next<svg th:replace="~{fragments/icons :: icon('arrow-right')}"></svg></a>
+        </div>
+    </div>
+</section>
+
+<main class="page">
+    <div class="container">
+        <div class="cal-legend">
+            <span><i class="swatch" style="background:var(--indigo)"></i>Approved</span>
+            <span><i class="swatch" style="background:repeating-linear-gradient(135deg,#fff3df 0 4px,#ffe9c2 4px 8px)"></i>Pending</span>
+            <span th:unless="${isHod}"><i class="swatch" style="outline:2px solid var(--gold);outline-offset:-2px;background:#fff"></i>Your leave</span>
+            <span><i class="swatch" style="box-shadow:inset 0 0 0 2px var(--gold)"></i>Today</span>
+            <span th:text="${isHod} ? 'Showing pending and approved leave of all faculty.' : 'Showing your leave and colleagues\' approved leave.'">info</span>
+        </div>
+
+        <div class="cal" id="calendar">
+            <div class="cal-head" th:each="d : ${ {'Mon','Tue','Wed','Thu','Fri','Sat','Sun'} }" th:text="${d}">Mon</div>
+            <th:block th:each="week : ${cal.weeks}">
+                <div th:each="day : ${week}" class="cal-day" th:id="'day-' + ${day.date}"
+                     th:classappend="${!day.inMonth ? 'out ' : ''} + ${day.weekend ? 'weekend ' : ''} + ${day.today ? 'today' : ''}">
+                    <div class="day-num">
+                        <span th:text="${#temporals.format(day.date, 'd')} + ${!day.inMonth ? '' : ''}">1</span>
+                        <span class="count" th:if="${!#lists.isEmpty(day.leaves)}"
+                              th:text="${#lists.size(day.leaves)} + ' away'">1 away</span>
+                    </div>
+                    <th:block th:each="l : ${day.leaves}"
+                              th:with="canOpen=${isHod or l.facultyUsername == currentUsername or l.substituteUsername == currentUsername}">
+                        <a class="chip" th:if="${canOpen}" th:href="@{/leaves/{id}(id=${l.id})}"
+                           th:classappend="${l.status} + ${l.facultyUsername == currentUsername ? ' mine' : ''}"
+                           th:title="${l.facultyName} + ' · ' + ${l.leaveType.label} + ' · ' + ${l.status}"
+                           th:text="${l.facultyName}">Name</a>
+                        <span class="chip" th:unless="${canOpen}" th:classappend="${l.status}"
+                              th:title="${l.facultyName} + ' · ' + ${l.leaveType.label}" th:text="${l.facultyName}">Name</span>
+                    </th:block>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

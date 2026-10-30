@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
+    /** Public landing page; signed-in users see links to their dashboard. */
     @GetMapping("/")
     public String home() {
-        return "redirect:/dashboard";
+        return "index";
     }
 
     @GetMapping("/login")

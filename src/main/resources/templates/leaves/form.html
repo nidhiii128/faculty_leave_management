@@ -3,38 +3,87 @@
 <head th:replace="~{fragments/layout :: head(${editing} ? 'Edit leave' : 'Apply for leave')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: nav}"></header>
-<main class="narrow">
-    <h1 id="page-title" th:text="${editing} ? 'Edit leave request' : 'Apply for leave'">Apply for leave</h1>
-    <div th:replace="~{fragments/layout :: flash}"></div>
+<section class="page-hero">
+    <div class="container">
+        <div>
+            <div class="crumbs"><a th:href="@{/dashboard}">Dashboard</a> / <a th:href="@{/leaves}">Leave records</a> /
+                <span th:text="${editing} ? 'Edit' : 'New request'">New</span></div>
+            <h1 id="page-title" th:text="${editing} ? 'Edit leave request' : 'Apply for leave'">Apply for leave</h1>
+            <p>Your request goes to the HOD for approval as soon as you submit it.</p>
+        </div>
+    </div>
+</section>
 
-    <form id="leave-form" class="card" method="post" th:object="${leaveForm}"
-          th:action="${editing} ? @{/leaves/{id}(id=${leaveId})} : @{/leaves}">
-        <p class="field-error" id="form-errors" th:if="${#fields.hasGlobalErrors() or #fields.hasErrors('dateRangeValid')}">
-            <span th:each="e : ${#fields.errors('dateRangeValid')}" th:text="${e}"></span>
-            <span th:each="e : ${#fields.globalErrors()}" th:text="${e}"></span>
-        </p>
+<main class="page">
+    <div class="container two-col">
+        <div>
+            <div th:replace="~{fragments/layout :: flash}"></div>
+            <form id="leave-form" class="card" method="post" enctype="multipart/form-data" th:object="${leaveForm}"
+                  th:action="${editing} ? @{/leaves/{id}(id=${leaveId})} : @{/leaves}">
+                <p class="alert err" id="form-errors" th:if="${#fields.hasGlobalErrors() or #fields.hasErrors('dateRangeValid')}">
+                    <span th:each="e : ${#fields.errors('dateRangeValid')}" th:text="${e}"></span>
+                    <span th:each="e : ${#fields.globalErrors()}" th:text="${e}"></span>
+                </p>
 
-        <label for="leaveType">Leave type</label>
-        <select id="leaveType" th:field="*{leaveType}">
-            <option value="">-- select --</option>
-            <option th:each="t : ${leaveTypes}" th:value="${t}" th:text="${t.label}">Casual</option>
-        </select>
-        <span class="field-error" th:errors="*{leaveType}"></span>
+                <label for="leaveType">Leave type</label>
+                <select id="leaveType" th:field="*{leaveType}">
+                    <option value="">Select a leave type</option>
+                    <option th:each="t : ${leaveTypes}" th:value="${t}" th:text="${t.label}">Casual</option>
+                </select>
+                <span class="field-error" th:errors="*{leaveType}"></span>
 
-        <label for="startDate">Start date</label>
-        <input id="startDate" type="date" th:field="*{startDate}">
-        <span class="field-error" th:errors="*{startDate}"></span>
+                <div class="field-row">
+                    <div>
+                        <label for="startDate">Start date</label>
+                        <input id="startDate" type="date" th:field="*{startDate}">
+                        <span class="field-error" th:errors="*{startDate}"></span>
+                    </div>
+                    <div>
+                        <label for="endDate">End date</label>
+                        <input id="endDate" type="date" th:field="*{endDate}">
+                        <span class="field-error" th:errors="*{endDate}"></span>
+                    </div>
+                </div>
 
-        <label for="endDate">End date</label>
-        <input id="endDate" type="date" th:field="*{endDate}">
-        <span class="field-error" th:errors="*{endDate}"></span>
+                <label for="reason">Reason</label>
+                <textarea id="reason" th:field="*{reason}" placeholder="For example: family function in Nashik"></textarea>
+                <span class="field-error" th:errors="*{reason}"></span>
 
-        <label for="reason">Reason</label>
-        <textarea id="reason" th:field="*{reason}"></textarea>
-        <span class="field-error" th:errors="*{reason}"></span>
+                <label for="substitute">Substitute for your lectures <span class="muted">(optional)</span></label>
+                <select id="substitute" th:field="*{substitute}">
+                    <option value="">No substitute needed</option>
+                    <option th:each="c : ${colleagues}" th:value="${c.username}"
+                            th:text="${c.fullName} + ' (' + ${c.department} + ')'">Colleague</option>
+                </select>
+                <p class="hint">The colleague sees this leave on their dashboard.</p>
 
-        <button id="submit-leave" type="submit" th:text="${editing} ? 'Save changes' : 'Submit request'">Submit</button>
-    </form>
+                <label for="attachment">Supporting document <span class="muted">(optional)</span></label>
+                <div class="upload-box" id="upload-box">
+                    <input id="attachment" name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png">
+                    <p class="hint">PDF, JPG or PNG, up to 5 MB. Attach a medical certificate for sick leave.</p>
+                    <p class="hint" id="current-attachment" th:if="${currentAttachment}">
+                        Current document: <b th:text="${currentAttachment}">file.pdf</b>. Choose a new file to replace it.</p>
+                </div>
+
+                <div class="form-actions">
+                    <button id="submit-leave" type="submit" th:text="${editing} ? 'Save changes' : 'Submit request'">Submit</button>
+                    <a class="btn secondary" th:href="${editing} ? @{/leaves/{id}(id=${leaveId})} : @{/dashboard}">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <aside class="card side-panel">
+            <h3><svg th:replace="~{fragments/icons :: icon('file')}"></svg>Before you submit</h3>
+            <ul>
+                <li>The end date cannot be before the start date.</li>
+                <li>Give a short, clear reason (5 to 500 characters).</li>
+                <li>For sick leave, attach the medical certificate.</li>
+                <li>Pick a colleague who will take your lectures.</li>
+                <li>You can edit or cancel the request until the HOD reviews it.</li>
+            </ul>
+        </aside>
+    </div>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

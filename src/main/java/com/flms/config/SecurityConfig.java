@@ -26,7 +26,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/actuator/health/**", "/actuator/info").permitAll()
+                .requestMatchers("/", "/login", "/css/**", "/img/**", "/js/**", "/actuator/health/**", "/actuator/info").permitAll()
                 .requestMatchers("/leaves/*/approve", "/leaves/*/reject").hasRole("HOD")
                 .anyRequest().authenticated())
             .formLogin(form -> form
@@ -48,6 +48,7 @@ public class SecurityConfig {
         return new InMemoryUserDetailsManager(
             User.withUsername("faculty1").password(pw).roles("FACULTY").build(),
             User.withUsername("faculty2").password(pw).roles("FACULTY").build(),
+            User.withUsername("faculty3").password(pw).roles("FACULTY").build(),
             User.withUsername("hod").password(pw).roles("HOD").build());
     }
 }
