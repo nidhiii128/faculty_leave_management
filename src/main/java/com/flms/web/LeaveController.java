@@ -1,14 +1,22 @@
 package com.flms.web;
 
+import com.flms.config.FacultyDirectory;
+import com.flms.model.LeaveAttachment;
 import com.flms.model.LeaveRequest;
 import com.flms.model.LeaveStatus;
 import com.flms.model.LeaveType;
 import com.flms.service.Actor;
+import com.flms.service.AttachmentService;
 import com.flms.service.LeaveReportService;
+import com.flms.service.LeaveNotFoundException;
 import com.flms.service.LeaveService;
 import com.flms.service.LeaveWorkflowService;
 import com.flms.service.WorkflowException;
 import jakarta.validation.Valid;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +29,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 @Controller
 @RequestMapping("/leaves")
 public class LeaveController {
@@ -28,12 +41,19 @@ public class LeaveController {
     private final LeaveService leaveService;
     private final LeaveWorkflowService workflowService;
     private final LeaveReportService reportService;
+    private final AttachmentService attachmentService;
 
     public LeaveController(LeaveService leaveService, LeaveWorkflowService workflowService,
-                           LeaveReportService reportService) {
+                           LeaveReportService reportService, AttachmentService attachmentService) {
         this.leaveService = leaveService;
         this.workflowService = workflowService;
         this.reportService = reportService;
+        this.attachmentService = attachmentService;
+    }
+
+    @ModelAttribute("colleagues")
+    public List<FacultyDirectory.Profile> colleagues(Authentication auth) {
+        return auth == null ? List.of() : FacultyDirectory.colleaguesOf(auth.getName());
     }
 
     @ModelAttribute("leaveTypes")
@@ -73,8 +93,11 @@ public class LeaveController {
             return "leaves/form";
         }
         try {
-            LeaveRequest saved = leaveService.apply(Actor.from(auth), form.getLeaveType(),
-                form.getStartDate(), form.getEndDate(), form.getReason());
+            validateAttachment(form);
+            Actor actor = Actor.from(auth);
+            LeaveRequest saved = leaveService.apply(actor, form.getLeaveType(),
+                form.getStartDate(), form.getEndDate(), form.getReason(), form.getSubstitute());
+            storeAttachment(actor, saved.getId(), form);
             redirect.addFlashAttribute("success", "Leave request submitted and is pending HOD approval.");
             return "redirect:/leaves/" + saved.getId();
         } catch (WorkflowException e) {
@@ -101,6 +124,7 @@ public class LeaveController {
         model.addAttribute("leaveForm", LeaveForm.from(leave));
         model.addAttribute("editing", true);
         model.addAttribute("leaveId", id);
+        model.addAttribute("currentAttachment", leave.getAttachmentName());
         return "leaves/form";
     }
 
@@ -113,13 +137,27 @@ public class LeaveController {
             return "leaves/form";
         }
         try {
-            leaveService.update(Actor.from(auth), id, form.getLeaveType(),
-                form.getStartDate(), form.getEndDate(), form.getReason());
+            validateAttachment(form);
+            Actor actor = Actor.from(auth);
+            leaveService.update(actor, id, form.getLeaveType(),
+                form.getStartDate(), form.getEndDate(), form.getReason(), form.getSubstitute());
+            storeAttachment(actor, id, form);
             redirect.addFlashAttribute("success", "Leave request updated.");
         } catch (WorkflowException e) {
             redirect.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/leaves/" + id;
+    }
+
+    @GetMapping("/{id}/attachment")
+    public ResponseEntity<byte[]> attachment(@PathVariable Long id, Authentication auth) {
+        LeaveAttachment file = attachmentService.load(Actor.from(auth), id)
+            .orElseThrow(() -> new LeaveNotFoundException(id));
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(file.getContentType()))
+            .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.inline()
+                .filename(file.getFileName(), StandardCharsets.UTF_8).build().toString())
+            .body(file.getData());
     }
 
     @PostMapping("/{id}/cancel")
@@ -150,5 +188,23 @@ public class LeaveController {
             redirect.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/leaves/" + id;
+    }
+
+    private static void validateAttachment(LeaveForm form) {
+        if (form.hasAttachment()) {
+            AttachmentService.validate(form.getAttachment().getOriginalFilename(), form.getAttachment().getSize());
+        }
+    }
+
+    private void storeAttachment(Actor actor, Long leaveId, LeaveForm form) {
+        if (!form.hasAttachment()) {
+            return;
+        }
+        try {
+            attachmentService.store(actor, leaveId, form.getAttachment().getOriginalFilename(),
+                form.getAttachment().getBytes());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

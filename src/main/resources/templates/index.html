@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Home')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div>
+                <p class="eyebrow">VIDYALANKAR INSTITUTE OF TECHNOLOGY · COMPUTER ENGINEERING</p>
+                <h1 id="hero-title">Faculty Leave, <em>Made Simple</em></h1>
+                <p class="lead">Apply for leave in a minute, attach your certificate, arrange a substitute for your
+                    lectures and follow every step until the HOD approves. No paper forms, no follow-ups.</p>
+                <div class="cta">
+                    <a class="btn btn-gold" id="hero-apply" th:href="${currentUser != null} ? @{/leaves/new} : @{/login}">
+                        Apply for leave <svg th:replace="~{fragments/icons :: icon('arrow-right')}"></svg></a>
+                    <a class="btn btn-outline" id="hero-dashboard" th:href="${currentUser != null} ? @{/dashboard} : @{/login}"
+                       th:text="${currentUser != null} ? 'Go to my dashboard' : 'Sign in'">Sign in</a>
+                </div>
+            </div>
+            <div class="hero-card">
+                <p class="eyebrow">A BETTER WAY TO MANAGE LEAVE</p>
+                <h3>Leave request #1024</h3>
+                <div class="mini"><div><b>Casual leave · 2 days</b><small>Family function in Nashik</small></div>
+                    <span class="badge APPROVED">APPROVED</span></div>
+                <div class="mini"><div><b>Substitute arranged</b><small>Prof. Neha Joshi takes the lectures</small></div>
+                    <svg th:replace="~{fragments/icons :: icon('swap')}"></svg></div>
+                <div class="mini"><div><b>Medical certificate</b><small>certificate.pdf · 240 KB</small></div>
+                    <svg th:replace="~{fragments/icons :: icon('paperclip')}"></svg></div>
+                <div class="mini"><div><b>Reviewed by HOD</b><small>"Approved, all the best"</small></div>
+                    <svg th:replace="~{fragments/icons :: icon('check-circle')}"></svg></div>
+            </div>
+        </div>
+    </section>
+    <div class="hero-strip">
+        <div class="container">
+            <span><svg th:replace="~{fragments/icons :: icon('shield')}"></svg>Secure login for faculty and HOD</span>
+            <span><svg th:replace="~{fragments/icons :: icon('bolt')}"></svg>Tested on every change by Jenkins and Selenium</span>
+            <span><svg th:replace="~{fragments/icons :: icon('globe')}"></svg>Works on phone and laptop</span>
+        </div>
+    </div>
+
+    <!-- Feature row -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="features">
+                <div class="feature"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('edit')}"></svg></span>
+                    <h3>Quick apply</h3><p>Choose the type, dates and reason. Wrong dates are caught at once.</p></div>
+                <div class="feature"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('eye')}"></svg></span>
+                    <h3>Live status</h3><p>See Pending, Approved or Rejected with the HOD's comment.</p></div>
+                <div class="feature"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('check-circle')}"></svg></span>
+                    <h3>One-click approval</h3><p>The HOD reviews every request and approves or rejects with a note.</p></div>
+                <div class="feature"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('chart')}"></svg></span>
+                    <h3>Clear dashboard</h3><p>Counts, approved days and upcoming leave on one page.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leave types -->
+    <section class="section alt">
+        <div class="container split">
+            <div class="section-head">
+                <p class="eyebrow">LEAVE TYPES</p>
+                <h2>The right leave for every need</h2>
+                <p class="muted">Every request follows the same simple path: apply, HOD review, done. Sick leave can carry a
+                    medical certificate and every request can name a colleague who takes your lectures.</p>
+                <a class="btn" th:href="${currentUser != null} ? @{/leaves/new} : @{/login}">Start an application
+                    <svg th:replace="~{fragments/icons :: icon('arrow-right')}"></svg></a>
+            </div>
+            <div class="types">
+                <div class="type-card"><div class="top"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('sun')}"></svg></span></div>
+                    <div class="body"><h3>Casual leave</h3><p>Personal work, family functions and short breaks.</p></div></div>
+                <div class="type-card"><div class="top"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('heart')}"></svg></span></div>
+                    <div class="body"><h3>Sick leave</h3><p>Illness or medical care. Attach the certificate.</p></div></div>
+                <div class="type-card"><div class="top"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('award')}"></svg></span></div>
+                    <div class="body"><h3>Earned leave</h3><p>Planned longer leave from your earned balance.</p></div></div>
+                <div class="type-card"><div class="top"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('briefcase')}"></svg></span></div>
+                    <div class="body"><h3>On duty</h3><p>Exam duty, conferences, workshops and university work.</p></div></div>
+                <div class="type-card"><div class="top"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('more')}"></svg></span></div>
+                    <div class="body"><h3>Other</h3><p>Anything else, explained in the reason.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow">HOW IT WORKS</p>
+                <h2>Three steps, no paperwork</h2>
+            </div>
+            <div class="steps-row">
+                <div class="how"><h3>Apply online</h3><p>Fill the form, attach a document if needed and pick a substitute.</p></div>
+                <div class="how"><h3>HOD reviews</h3><p>The HOD sees the request, the certificate and who covers your lectures.</p></div>
+                <div class="how"><h3>Get the decision</h3><p>Your dashboard shows the result and the leave appears on the calendar.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New features -->
+    <section class="section alt">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow">NEW IN THIS VERSION</p>
+                <h2>Plan the department, not just the leave</h2>
+            </div>
+            <div class="new-grid">
+                <div class="new-card"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('calendar')}"></svg></span>
+                    <h3>Leave calendar</h3><p>A month view of who is away on each day, so the HOD can plan the timetable.</p></div>
+                <div class="new-card"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('paperclip')}"></svg></span>
+                    <h3>Medical certificates</h3><p>Attach a PDF or photo with sick leave. Only you and the HOD can open it.</p></div>
+                <div class="new-card"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('swap')}"></svg></span>
+                    <h3>Substitute arrangement</h3><p>Name the colleague who takes your lectures. They see it on their dashboard.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="cta-band">
+                <div><h2>Planning some time off?</h2><p>Sign in with your faculty account and apply in under a minute.</p></div>
+                <a class="btn btn-gold" th:href="${currentUser != null} ? @{/leaves/new} : @{/login}">Apply for leave</a>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

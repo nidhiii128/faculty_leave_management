@@ -51,6 +51,14 @@ public class LeaveRequest {
 
     private String reviewedBy;
 
+    /** Colleague who takes this teacher's lectures while they are away (optional). */
+    private String substituteUsername;
+
+    private String substituteName;
+
+    /** File name of the supporting document (e.g. medical certificate); bytes live in LeaveAttachment. */
+    private String attachmentName;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -96,6 +104,12 @@ public class LeaveRequest {
     public void setReviewerComment(String reviewerComment) { this.reviewerComment = reviewerComment; }
     public String getReviewedBy() { return reviewedBy; }
     public void setReviewedBy(String reviewedBy) { this.reviewedBy = reviewedBy; }
+    public String getSubstituteUsername() { return substituteUsername; }
+    public void setSubstituteUsername(String substituteUsername) { this.substituteUsername = substituteUsername; }
+    public String getSubstituteName() { return substituteName; }
+    public void setSubstituteName(String substituteName) { this.substituteName = substituteName; }
+    public String getAttachmentName() { return attachmentName; }
+    public void setAttachmentName(String attachmentName) { this.attachmentName = attachmentName; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

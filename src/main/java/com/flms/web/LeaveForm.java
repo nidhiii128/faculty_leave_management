@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -28,6 +29,12 @@ public class LeaveForm {
     @Size(min = 5, max = 500, message = "Reason must be 5 to 500 characters")
     private String reason;
 
+    /** Username of the colleague who will take the lectures (optional). */
+    private String substitute;
+
+    /** Optional supporting document, e.g. a medical certificate for sick leave. */
+    private MultipartFile attachment;
+
     @AssertTrue(message = "End date cannot be before start date")
     public boolean isDateRangeValid() {
         return startDate == null || endDate == null || !endDate.isBefore(startDate);
@@ -39,6 +46,7 @@ public class LeaveForm {
         form.setStartDate(leave.getStartDate());
         form.setEndDate(leave.getEndDate());
         form.setReason(leave.getReason());
+        form.setSubstitute(leave.getSubstituteUsername());
         return form;
     }
 
@@ -50,4 +58,12 @@ public class LeaveForm {
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }
+    public String getSubstitute() { return substitute; }
+    public void setSubstitute(String substitute) { this.substitute = substitute; }
+    public MultipartFile getAttachment() { return attachment; }
+    public void setAttachment(MultipartFile attachment) { this.attachment = attachment; }
+
+    public boolean hasAttachment() {
+        return attachment != null && !attachment.isEmpty();
+    }
 }

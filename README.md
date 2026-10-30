@@ -17,6 +17,10 @@ git push → Jenkins → Build → Unit tests → Selenium gate → Package WAR 
 - Faculty can apply for leave and view their own records
 - Faculty can edit or cancel pending requests; HOD approves or rejects with a comment
 - Search by keyword, status and type; summary dashboard; JSON API
+- **Leave calendar**: month view of who is on leave each day (`/calendar`)
+- **Supporting documents**: attach a medical certificate (PDF/JPG/PNG, up to 5 MB); only the owner and HOD can open it
+- **Substitute arrangement**: name a colleague who takes your lectures; they see it on their dashboard
+- VIT-themed responsive design: landing page, split login, dashboard with charts
 - Health and version endpoints (`/actuator/health`, `/actuator/info`)
 
 ## Quick start
@@ -27,12 +31,12 @@ Requires JDK 17+ and Maven 3.8+.
 mvn spring-boot:run
 ```
 
-Open http://localhost:8080 and sign in as `faculty1` / `password` (Faculty) or `hod` / `password` (HOD).
+Open http://localhost:8080 and sign in as `faculty1`, `faculty2` or `faculty3` / `password` (Faculty) or `hod` / `password` (HOD).
 
 | Command | What it does |
 |---|---|
-| `mvn test` | 24 unit and MVC tests |
-| `mvn verify` | unit tests + 14 Selenium tests (headless HtmlUnit) |
+| `mvn test` | 33 unit and MVC tests |
+| `mvn verify` | unit tests + 17 Selenium tests (headless HtmlUnit) |
 | `mvn verify -Dbrowser=chrome` | Selenium tests in headless Chrome |
 | `mvn package && java -jar target/flms.war` | Build and run the WAR |
 | `docker compose up -d --build` | Run in Docker on http://localhost:8090 (after `mvn package`) |

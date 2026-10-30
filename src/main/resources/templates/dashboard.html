@@ -3,32 +3,115 @@
 <head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: nav}"></header>
-<main>
-    <h1 id="page-title">Dashboard</h1>
-    <p class="muted" th:text="${isHod} ? 'Department summary of all leave requests.' : 'Summary of your leave requests.'">Summary</p>
-
-    <div class="grid">
-        <a class="stat" th:href="@{/leaves(status='PENDING')}"><div class="muted">Pending</div><div class="num" id="count-pending" th:text="${summary.pending}">0</div></a>
-        <a class="stat" th:href="@{/leaves(status='APPROVED')}"><div class="muted">Approved</div><div class="num" id="count-approved" th:text="${summary.approved}">0</div></a>
-        <a class="stat" th:href="@{/leaves(status='REJECTED')}"><div class="muted">Rejected</div><div class="num" id="count-rejected" th:text="${summary.rejected}">0</div></a>
-        <a class="stat" th:href="@{/leaves(status='CANCELLED')}"><div class="muted">Cancelled</div><div class="num" id="count-cancelled" th:text="${summary.cancelled}">0</div></a>
-        <div class="stat"><div class="muted">Approved days</div><div class="num" id="approved-days" th:text="${summary.approvedDays}">0</div></div>
+<section class="page-hero">
+    <div class="container">
+        <div>
+            <div class="crumbs"><a th:href="@{/}">Home</a> / Dashboard</div>
+            <h1 id="page-title">Dashboard</h1>
+            <p th:text="${isHod} ? 'Department summary of all leave requests.' : 'Summary of your leave requests.'">Summary</p>
+        </div>
+        <div class="welcome-actions">
+            <a class="btn btn-gold" th:unless="${isHod}" th:href="@{/leaves/new}">
+                <svg th:replace="~{fragments/icons :: icon('plus')}"></svg>Apply for leave</a>
+            <a class="btn btn-gold" th:if="${isHod}" th:href="@{/leaves(status='PENDING')}">
+                <svg th:replace="~{fragments/icons :: icon('clock')}"></svg>Review pending</a>
+            <a class="btn btn-outline" th:href="@{/calendar}">
+                <svg th:replace="~{fragments/icons :: icon('calendar')}"></svg>Calendar</a>
+        </div>
     </div>
+</section>
 
-    <h2>Upcoming approved leave</h2>
-    <p class="muted" id="no-upcoming" th:if="${#lists.isEmpty(summary.upcomingApproved)}">No upcoming approved leave.</p>
-    <table id="upcoming-table" th:unless="${#lists.isEmpty(summary.upcomingApproved)}">
-        <thead><tr><th>Faculty</th><th>Type</th><th>From</th><th>To</th><th>Days</th></tr></thead>
-        <tbody>
-        <tr th:each="l : ${summary.upcomingApproved}">
-            <td><a th:href="@{/leaves/{id}(id=${l.id})}" th:text="${l.facultyName}">Name</a></td>
-            <td th:text="${l.leaveType.label}">Casual</td>
-            <td th:text="${#temporals.format(l.startDate, 'dd MMM yyyy')}">start</td>
-            <td th:text="${#temporals.format(l.endDate, 'dd MMM yyyy')}">end</td>
-            <td th:text="${l.days}">1</td>
-        </tr>
-        </tbody>
-    </table>
+<main class="page">
+    <div class="container">
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="grid" style="margin-bottom:22px">
+            <a class="stat tone-warn" th:href="@{/leaves(status='PENDING')}">
+                <span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('clock')}"></svg></span>
+                <span><span class="label">Pending</span><div class="num" id="count-pending" th:text="${summary.pending}">0</div></span></a>
+            <a class="stat tone-ok" th:href="@{/leaves(status='APPROVED')}">
+                <span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('check-circle')}"></svg></span>
+                <span><span class="label">Approved</span><div class="num" id="count-approved" th:text="${summary.approved}">0</div></span></a>
+            <a class="stat tone-err" th:href="@{/leaves(status='REJECTED')}">
+                <span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('x-circle')}"></svg></span>
+                <span><span class="label">Rejected</span><div class="num" id="count-rejected" th:text="${summary.rejected}">0</div></span></a>
+            <a class="stat tone-grey" th:href="@{/leaves(status='CANCELLED')}">
+                <span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('ban')}"></svg></span>
+                <span><span class="label">Cancelled</span><div class="num" id="count-cancelled" th:text="${summary.cancelled}">0</div></span></a>
+            <div class="stat tone-indigo">
+                <span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('calendar')}"></svg></span>
+                <span><span class="label">Approved days</span><div class="num" id="approved-days" th:text="${summary.approvedDays}">0</div></span></div>
+        </div>
+
+        <div class="two-col">
+            <div>
+                <div class="card" th:unless="${isHod}">
+                    <div class="card-head">
+                        <h2>Lectures you are covering</h2>
+                        <span class="tag"><svg th:replace="~{fragments/icons :: icon('swap')}"></svg>Substitute</span>
+                    </div>
+                    <p class="muted empty" id="no-covering" th:if="${#lists.isEmpty(summary.covering)}">
+                        No colleague has named you as their substitute.</p>
+                    <ul class="list-plain" id="covering-list" th:unless="${#lists.isEmpty(summary.covering)}">
+                        <li th:each="l : ${summary.covering}" th:id="'covering-' + ${l.id}">
+                            <span class="date-chip"><b th:text="${#temporals.format(l.startDate, 'dd')}">01</b>
+                                <small th:text="${#temporals.format(l.startDate, 'MMM')}">Nov</small></span>
+                            <div style="flex:1">
+                                <a th:href="@{/leaves/{id}(id=${l.id})}" th:text="${l.facultyName}">Name</a>
+                                <div class="muted" style="font-size:13px"
+                                     th:text="${l.leaveType.label} + ' · ' + ${l.days} + (${l.days} == 1 ? ' day' : ' days') + ' · ' + ${l.reason}">reason</div>
+                            </div>
+                            <span class="badge" th:classappend="${l.status}" th:text="${l.status}">PENDING</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Upcoming approved leave</h2>
+                        <a class="btn btn-ghost btn-sm" th:href="@{/calendar}">Open calendar</a>
+                    </div>
+                    <p class="muted empty" id="no-upcoming" th:if="${#lists.isEmpty(summary.upcomingApproved)}">No upcoming approved leave.</p>
+                    <div class="table-wrap" th:unless="${#lists.isEmpty(summary.upcomingApproved)}">
+                        <table id="upcoming-table">
+                            <thead><tr><th>Faculty</th><th>Type</th><th>From</th><th>To</th><th>Days</th></tr></thead>
+                            <tbody>
+                            <tr th:each="l : ${summary.upcomingApproved}">
+                                <td><a th:href="@{/leaves/{id}(id=${l.id})}" th:text="${l.facultyName}">Name</a></td>
+                                <td th:text="${l.leaveType.label}">Casual</td>
+                                <td th:text="${#temporals.format(l.startDate, 'dd MMM yyyy')}">start</td>
+                                <td th:text="${#temporals.format(l.endDate, 'dd MMM yyyy')}">end</td>
+                                <td th:text="${l.days}">1</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <aside>
+                <div class="card">
+                    <h3>Approved days by type</h3>
+                    <div class="bars" id="type-chart">
+                        <div class="bar-row" th:each="e : ${summary.approvedDaysByType}">
+                            <span th:text="${e.key.label}">Casual</span>
+                            <span class="bar-track"><span class="bar-fill"
+                                th:style="'display:block;width:' + ${e.value * 100 / summary.maxTypeDays()} + '%'"></span></span>
+                            <b th:text="${e.value}">0</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="card quick">
+                    <h3>Quick links</h3>
+                    <a th:unless="${isHod}" th:href="@{/leaves/new}"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('plus')}"></svg></span>Apply for leave</a>
+                    <a th:href="@{/leaves}"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('list')}"></svg></span>All my records</a>
+                    <a th:href="@{/calendar}"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('calendar')}"></svg></span>Leave calendar</a>
+                    <a th:href="@{/leaves(status='PENDING')}"><span class="icon-wrap"><svg th:replace="~{fragments/icons :: icon('clock')}"></svg></span>Pending requests</a>
+                </div>
+            </aside>
+        </div>
+    </div>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

@@ -3,19 +3,39 @@
 <head th:replace="~{fragments/layout :: head('Sign in')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: nav}"></header>
-<main class="narrow">
-    <h1>Sign in</h1>
-    <p class="alert err" id="login-error" th:if="${param.error}">Invalid username or password.</p>
-    <p class="alert ok" id="logout-msg" th:if="${param.logout}">You have been logged out.</p>
-    <form th:action="@{/login}" method="post" class="card">
-        <label for="username">Username</label>
-        <input id="username" name="username" autofocus required>
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" required>
-        <button id="login-btn" type="submit">Sign in</button>
-    </form>
-    <p class="muted">Demo users: <code>faculty1</code>, <code>faculty2</code> (Faculty), <code>hod</code> (HOD).
-        Password: <code>password</code></p>
+<main class="auth">
+    <section class="auth-side">
+        <span class="logo-card"><img th:src="@{/img/vit-logo.png}" alt="Vidyalankar Institute of Technology"></span>
+        <p class="eyebrow">FACULTY LEAVE PORTAL</p>
+        <h1>Welcome back</h1>
+        <p>Sign in to apply for leave, follow your requests and see who is away this month.</p>
+        <ul>
+            <li><svg th:replace="~{fragments/icons :: icon('check-circle')}"></svg>Apply and track leave online</li>
+            <li><svg th:replace="~{fragments/icons :: icon('paperclip')}"></svg>Attach medical certificates</li>
+            <li><svg th:replace="~{fragments/icons :: icon('swap')}"></svg>Arrange a substitute for your lectures</li>
+            <li><svg th:replace="~{fragments/icons :: icon('calendar')}"></svg>Department leave calendar</li>
+        </ul>
+    </section>
+    <section class="auth-form">
+        <div class="card">
+            <h2>Sign in</h2>
+            <p class="muted">Use your faculty or HOD account.</p>
+            <p class="alert err" id="login-error" th:if="${param.error}">Invalid username or password.</p>
+            <p class="alert ok" id="logout-msg" th:if="${param.logout}">You have been logged out.</p>
+            <form th:action="@{/login}" method="post">
+                <label for="username">Username</label>
+                <input id="username" name="username" autofocus required autocomplete="username">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required autocomplete="current-password">
+                <button id="login-btn" type="submit">Sign in</button>
+            </form>
+            <div class="demo-users">
+                Demo users: <code>faculty1</code> <code>faculty2</code> <code>faculty3</code> (Faculty),
+                <code>hod</code> (HOD). Password: <code>password</code>
+            </div>
+        </div>
+    </section>
 </main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

@@ -3,27 +3,85 @@
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="${title} + ' | Faculty Leave'">Faculty Leave</title>
+    <title th:text="${title} + ' | Faculty Leave Portal, VIT'">Faculty Leave Portal</title>
+    <link rel="icon" type="image/png" th:href="@{/img/vit-logo.png}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/app.js}" defer></script>
 </head>
 <body>
-<header th:fragment="nav" class="topbar">
-    <a class="brand" th:href="@{/dashboard}">Faculty Leave</a>
-    <span class="env" id="env-badge" th:text="${appEnv} + ' · v' + ${appVersion}">local</span>
-    <nav th:if="${currentUser != null}">
-        <a id="nav-dashboard" th:href="@{/dashboard}">Dashboard</a>
-        <a id="nav-leaves" th:href="@{/leaves}">Leave records</a>
-        <a id="nav-new" th:unless="${isHod}" th:href="@{/leaves/new}">Apply for leave</a>
-        <span class="user" id="current-user" th:text="${currentUser}">user</span>
-        <form th:action="@{/logout}" method="post" class="inline">
-            <button id="logout" type="submit" class="link">Log out</button>
-        </form>
-    </nav>
+
+<!-- Utility bar + main header (logo, navigation, user) -->
+<th:block th:fragment="nav">
+<div class="utility">
+    <div class="container">
+        <div>Department of Computer Engineering<span class="sep">|</span>Faculty Leave Portal</div>
+        <div>
+            <span class="env" id="env-badge" th:text="${appEnv} + ' · v' + ${appVersion}">local</span>
+            <span class="sep">|</span><a href="https://vit.edu.in/" target="_blank" rel="noopener">vit.edu.in</a>
+        </div>
+    </div>
+</div>
+<header class="site-header">
+    <div class="container">
+        <a class="brand" th:href="@{/}">
+            <img th:src="@{/img/vit-logo.png}" alt="Vidyalankar Institute of Technology">
+            <span class="portal"><b>Faculty Leave Portal</b><span>Apply · Approve · Track</span></span>
+        </a>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Menu">
+            <svg th:replace="~{fragments/icons :: icon('menu')}"></svg>
+        </button>
+        <nav class="main-nav" id="main-nav">
+            <th:block th:if="${currentUser != null}">
+                <a class="nav-link" id="nav-dashboard" th:href="@{/dashboard}">Dashboard</a>
+                <a class="nav-link" id="nav-leaves" th:href="@{/leaves}">Leave records</a>
+                <a class="nav-link" id="nav-calendar" th:href="@{/calendar}">Calendar</a>
+                <a class="btn btn-gold btn-sm" id="nav-new" th:unless="${isHod}" th:href="@{/leaves/new}">
+                    <svg th:replace="~{fragments/icons :: icon('plus')}"></svg>Apply for leave</a>
+                <div class="user-chip">
+                    <span class="avatar" th:text="${#strings.substring(currentUser.replace('Dr. ', '').replace('Prof. ', ''), 0, 1)}">A</span>
+                    <span class="who"><span id="current-user" th:text="${currentUser}">user</span>
+                        <small th:text="${isHod} ? 'Head of Department' : 'Faculty'">Faculty</small></span>
+                    <form th:action="@{/logout}" method="post" class="inline">
+                        <button id="logout" type="submit" class="link" title="Log out">Log out</button>
+                    </form>
+                </div>
+            </th:block>
+            <th:block th:if="${currentUser == null}">
+                <a class="nav-link" th:href="@{/#features}">Features</a>
+                <a class="nav-link" th:href="@{/#how}">How it works</a>
+                <a class="btn btn-gold btn-sm" id="nav-login" th:href="@{/login}">Sign in</a>
+            </th:block>
+        </nav>
+    </div>
 </header>
+</th:block>
 
 <div th:fragment="flash">
     <p class="alert ok" id="flash-success" th:if="${success}" th:text="${success}"></p>
     <p class="alert err" id="flash-error" th:if="${error}" th:text="${error}"></p>
 </div>
+
+<footer th:fragment="footer" class="site-footer">
+    <div class="container">
+        <div>
+            <span class="logo-card"><img th:src="@{/img/vit-logo.png}" alt="VIT"></span>
+            <p>Online leave application and approval for the faculty of the Department of Computer Engineering.</p>
+        </div>
+        <div>
+            <h4>Portal</h4>
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/leaves}">Leave records</a>
+            <a th:href="@{/calendar}">Leave calendar</a>
+            <a th:href="@{/leaves/new}">Apply for leave</a>
+        </div>
+        <div>
+            <h4>Institute</h4>
+            <a href="https://vit.edu.in/" target="_blank" rel="noopener">Vidyalankar Institute of Technology</a>
+            <a href="https://vit.edu.in/" target="_blank" rel="noopener">Wadala (E), Mumbai</a>
+            <a th:href="@{/actuator/health}">System status</a>
+        </div>
+    </div>
+    <div class="footer-bottom">Faculty Leave Portal · DevOps Lab Project 2026-27 · Department of Computer Engineering, VIT</div>
+</footer>
 </body>
 </html>
